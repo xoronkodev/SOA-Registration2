@@ -241,9 +241,9 @@ else:
                         ">
                             <h2 style="color: #111111; margin-top: 0;">⚠️ ACTION REQUIRED</h2>
                             <p style="color: #444444; font-size: 16px; line-height: 1.5; margin-bottom: 25px;">
-                                Your details have been parsed locally, but your academy slot is <b>NOT YET CONFIRMED</b>. 
+                                Your details have been stored locally, but your academy slot is <b>NOT YET CONFIRMED</b>. 
                                 <br><br>
-                                You must click the green button below to sync your profile parameters with the Superior Officers Academy administrative WhatsApp registry channel.
+                                You must click the green button below to sync your profile details with the Superior Officers Academy administrative WhatsApp registry channel.
                             </p>
                             <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
                                 <div style="
