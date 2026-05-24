@@ -118,7 +118,7 @@ def main():
         father_name = st.text_input("Enter your father's name *")
         email = st.text_input("Enter your email address *")
         qualification = st.text_area("Kindly describe your Academic Qualification *")
-        whatsapp_number = st.tet_area("Please enter your whatsapp number ")
+        whatsapp_number = st.text_area("Please enter your whatsapp number ")
         col1, col2 = st.columns(2)
         with col1:
             css_attempts = st.number_input("How many times have you appeared in CSS examination before?", min_value=0, max_value=3, step=1)
