@@ -78,7 +78,7 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 # -------------------------------------------------------------------------
 # 2. USER INTERFACE & APP LAYOUT
 # -------------------------------------------------------------------------
-st.title("🏛️ SUPERIOR OFFICERS ACADEMY (SOA)")
+st.title("🎓 SUPERIOR OFFICERS ACADEMY (SOA)")
 st.markdown("#### Official Candidate Registration Portal")
 
 st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
