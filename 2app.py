@@ -51,21 +51,18 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
     {academic_section}
     -------------------------
     
-    The proof of payment receipt is attached below.
+    The proof of payment receipt is verified and attached below.
     """
     msg.attach(MIMEText(body, 'plain'))
     
     if receipt_file is not None:
-        # CRITICAL FIX: Rewind the file stream back to byte 0 before reading it into the email payload
+        # Rewind the file stream back to byte 0 before reading it into the email payload
         receipt_file.seek(0)
-        
         payload = MIMEBase('application', 'octet-stream')
         payload.set_payload(receipt_file.read())
         encoders.encode_base64(payload)
         payload.add_header('Content-Disposition', f'attachment; filename={receipt_file.name}')
         msg.attach(payload)
-        
-        # Rewind again just as a safe programming standard practice
         receipt_file.seek(0)
 
     try:
@@ -88,7 +85,7 @@ st.markdown("#### Official Candidate Registration Portal")
 st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
 st.write("---")
 
-# --- STEP 1: INITIAL SELECTION WITH CUSTOM INITIAL TEXT ---
+# --- STEP 1: INITIAL SELECTION ---
 st.subheader("🎯 Step 1: Select Your Registration Category")
 reg_type = st.selectbox(
     "Are you applying as a CSS Candidate or a General Academy Student? *",
@@ -174,7 +171,6 @@ else:
     uploaded_receipt = st.file_uploader("Upload your EasyPaisa payment screenshot or slip *", type=["png", "jpg", "jpeg", "pdf"])
     
     if uploaded_receipt is not None:
-        # Secure safety rewind before doing local screen rendering preview
         uploaded_receipt.seek(0)
         if uploaded_receipt.type in ["image/png", "image/jpeg"]:
             st.image(Image.open(uploaded_receipt), caption="Preview of payment proof", width=250)
@@ -193,12 +189,11 @@ else:
             st.error(f"❌ Failed Compliance: Your total opted marks value is {total_marks}. It must equal exactly 600 marks for CSS tracking.")
         
         else:
-            with st.spinner("Processing application data and packaging your secure transmission link..."):
+            with st.spinner("Processing application data..."):
                 candidate_data = {
                     "Name": name, 
                     "FatherName": father_name, 
                     "Email": email,
-                    "Project": "SOA",
                     "Whatsapp_Number": whatsapp_number,
                     "Qualification": qualification, 
                     "CSS_Attempts": css_attempts, 
@@ -208,7 +203,9 @@ else:
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt, reg_type)
                 
                 if email_sent:
-                    st.success(f"🎉 Registration Logged! Thank you {name}. Your application backup email has been sent successfully.")
+                    # --- ATTENTION GRABBING DESIGN INSTRUCTION ---
+                    st.error("⚠️ ACTION REQUIRED: YOUR REGISTRATION IS NOT COMPLETE YET!")
+                    st.info("To verify your identity and complete your enrollment, you must click the bright green button below to log your profile data into our WhatsApp registry database.")
                     
                     # --- SAFE WHATSAPP LINK TELEPORT ---
                     whatsapp_text = f"""*🎓 NEW SOA ACADEMY REGISTRATION!*
@@ -227,15 +224,14 @@ else:
                     MY_PHONE_NUMBER = "923365464411"
                     whatsapp_gateway_url = f"https://wa.me/{MY_PHONE_NUMBER}?text={encoded_text}"
                     
+                    # Giant glowing pulsing interactive button injection
                     st.markdown(f"""
                     <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
-                        <div style="background-color: #25D366; color: white; padding: 14px 20px; text-align: center; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0,0,0,0.15);">
-                            📲 Complete Submission & Send Details to WhatsApp
+                        <div style="background-color: #25D366; color: white; padding: 20px 25px; text-align: center; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0px 8px 15px rgba(37, 211, 102, 0.3); border: 2px solid #1ebd59; margin: 15px 0px;">
+                            🟢 CLICK HERE TO COMPLETE REGISTRATION ON WHATSAPP
                         </div>
                     </a>
                     """, unsafe_allow_html=True)
-                    
-                    st.info("💡 **Next Step:** Click the bright green WhatsApp button right above to safely transfer these registration details to the academy admin channel!")
                     st.balloons()
                 else:
                     st.warning("Application verified locally, but secure mail delivery engine encountered an error. Please check your network connection.")
