@@ -8,15 +8,14 @@ from email import encoders
 from datetime import datetime
 from PIL import Image
 
-# --- CRITICAL PYTHON 3.14 COMPATIBILITY INITIALIZATION ---
-# Moving this to the absolute top prevents blank page crashes on Python 3.14+
+# --- CRITICAL PYTHON INITIALIZATION ---
 st.set_page_config(page_title="SOA Registration", page_icon="🎓", layout="centered")
 
 # -------------------------------------------------------------------------
 # 1. SECURE EMAIL ENGINE
 # -------------------------------------------------------------------------
 def send_registration_email(details, subjects, marks, receipt_file, registration_type):
-    """Sends a detailed email report tailored to the registration type."""
+    """Sends a detailed email report tailored to the registration type with fixed file stream logic."""
     MY_EMAIL = "khanzada212008@gmail.com"
     MY_PASSWORD = "whyv rtdf odiq hsgc" 
 
@@ -57,11 +56,16 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
     msg.attach(MIMEText(body, 'plain'))
     
     if receipt_file is not None:
+        # CRITICAL FIX: Rewind the file stream back to byte 0 before reading it into the email payload
+        receipt_file.seek(0)
+        
         payload = MIMEBase('application', 'octet-stream')
         payload.set_payload(receipt_file.read())
         encoders.encode_base64(payload)
         payload.add_header('Content-Disposition', f'attachment; filename={receipt_file.name}')
         msg.attach(payload)
+        
+        # Rewind again just as a safe programming standard practice
         receipt_file.seek(0)
 
     try:
@@ -78,7 +82,7 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 # -------------------------------------------------------------------------
 # 2. USER INTERFACE & APP LAYOUT
 # -------------------------------------------------------------------------
-st.title("🎓 SUPERIOR OFFICERS ACADEMY (SOA)")
+st.title("🏛️ SUPERIOR OFFICERS ACADEMY (SOA)")
 st.markdown("#### Official Candidate Registration Portal")
 
 st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
@@ -169,8 +173,11 @@ else:
     st.subheader(f"📁 {current_step_label}: Registration Fee Receipt")
     uploaded_receipt = st.file_uploader("Upload your EasyPaisa payment screenshot or slip *", type=["png", "jpg", "jpeg", "pdf"])
     
-    if uploaded_receipt is not None and uploaded_receipt.type in ["image/png", "image/jpeg"]:
-        st.image(Image.open(uploaded_receipt), caption="Preview of payment proof", width=250)
+    if uploaded_receipt is not None:
+        # Secure safety rewind before doing local screen rendering preview
+        uploaded_receipt.seek(0)
+        if uploaded_receipt.type in ["image/png", "image/jpeg"]:
+            st.image(Image.open(uploaded_receipt), caption="Preview of payment proof", width=250)
 
     st.write("---")
     final_submit = st.button("Submit Final Application to SOA")
@@ -186,11 +193,12 @@ else:
             st.error(f"❌ Failed Compliance: Your total opted marks value is {total_marks}. It must equal exactly 600 marks for CSS tracking.")
         
         else:
-            with st.spinner("Processing application data..."):
+            with st.spinner("Processing application data and packaging your secure transmission link..."):
                 candidate_data = {
                     "Name": name, 
                     "FatherName": father_name, 
                     "Email": email,
+                    "Project": "SOA",
                     "Whatsapp_Number": whatsapp_number,
                     "Qualification": qualification, 
                     "CSS_Attempts": css_attempts, 
