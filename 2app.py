@@ -56,7 +56,6 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
     msg.attach(MIMEText(body, 'plain'))
     
     if receipt_file is not None:
-        # Rewind the file stream back to byte 0 before reading it into the email payload
         receipt_file.seek(0)
         payload = MIMEBase('application', 'octet-stream')
         payload.set_payload(receipt_file.read())
@@ -79,7 +78,7 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 # -------------------------------------------------------------------------
 # 2. USER INTERFACE & APP LAYOUT
 # -------------------------------------------------------------------------
-st.title("🏛️ SUPERIOR OFFICERS ACADEMY (SOA)")
+st.title("🎓 SUPERIOR OFFICERS ACADEMY (SOA)")
 st.markdown("#### Official Candidate Registration Portal")
 
 st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
@@ -203,11 +202,7 @@ else:
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt, reg_type)
                 
                 if email_sent:
-                    # --- ATTENTION GRABBING DESIGN INSTRUCTION ---
-                    st.error("⚠️ ACTION REQUIRED: YOUR REGISTRATION IS NOT COMPLETE YET!")
-                    st.info("To verify your identity and complete your enrollment, you must click the bright green button below to log your profile data into our WhatsApp registry database.")
-                    
-                    # --- SAFE WHATSAPP LINK TELEPORT ---
+                    # --- GENERATING THE WHATSAPP LOG MESSAGE LINK ---
                     whatsapp_text = f"""*🎓 NEW SOA ACADEMY REGISTRATION!*
 
 *Type:* {reg_type}
@@ -224,13 +219,50 @@ else:
                     MY_PHONE_NUMBER = "923365464411"
                     whatsapp_gateway_url = f"https://wa.me/{MY_PHONE_NUMBER}?text={encoded_text}"
                     
-                    # Giant glowing pulsing interactive button injection
+                    # --- UNMISSABLE CSS POPUP OVERLAY INJECTION ---
+                    # This dims the website backdrop entirely and locks focal point on the button
                     st.markdown(f"""
-                    <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
-                        <div style="background-color: #25D366; color: white; padding: 20px 25px; text-align: center; font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; box-shadow: 0px 8px 15px rgba(37, 211, 102, 0.3); border: 2px solid #1ebd59; margin: 15px 0px;">
-                            🟢 CLICK HERE TO COMPLETE REGISTRATION ON WHATSAPP
+                    <div style="
+                        position: fixed; 
+                        top: 0; left: 0; width: 100vw; height: 100vh; 
+                        background-color: rgba(0, 0, 0, 0.75); 
+                        z-index: 999999; 
+                        display: flex; justify-content: center; align-items: center;
+                    ">
+                        <div style="
+                            background-color: #ffffff; 
+                            padding: 40px; 
+                            border-radius: 16px; 
+                            max-width: 500px; 
+                            text-align: center; 
+                            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+                            border-top: 8px solid #25D366;
+                            font-family: sans-serif;
+                        ">
+                            <h2 style="color: #111111; margin-top: 0;">⚠️ ACTION REQUIRED</h2>
+                            <p style="color: #444444; font-size: 16px; line-height: 1.5; margin-bottom: 25px;">
+                                Your details have been parsed locally, but your academy slot is <b>NOT YET CONFIRMED</b>. 
+                                <br><br>
+                                You must click the green button below to sync your profile parameters with the Superior Officers Academy administrative WhatsApp registry channel.
+                            </p>
+                            <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
+                                <div style="
+                                    background-color: #25D366; 
+                                    color: white; 
+                                    padding: 18px 30px; 
+                                    font-size: 18px; 
+                                    font-weight: bold; 
+                                    border-radius: 8px; 
+                                    cursor: pointer; 
+                                    box-shadow: 0px 4px 15px rgba(37, 211, 102, 0.4);
+                                    transition: transform 0.2s ease;
+                                    display: inline-block;
+                                ">
+                                    🟢 FINALIZE REGISTRATION ON WHATSAPP
+                                </div>
+                            </a>
                         </div>
-                    </a>
+                    </div>
                     """, unsafe_allow_html=True)
                     st.balloons()
                 else:
