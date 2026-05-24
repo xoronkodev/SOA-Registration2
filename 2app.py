@@ -13,8 +13,8 @@ from twilio.rest import Client
 # -------------------------------------------------------------------------
 def send_whatsapp_notification(details, total_marks):
     """Sends a real-time summary notification directly to your phone via WhatsApp."""
-    TWILIO_ACCOUNT_SID = "YOUR_REAL_ACCOUNT_SID"
-    TWILIO_AUTH_TOKEN = "YOUR_REAL_AUTH_TOKEN"
+    TWILIO_ACCOUNT_SID = "AC7c6c5c8121c5287dd861758f57ac72cd"
+    TWILIO_AUTH_TOKEN = "77f1dd75cca3a1ac5dc86f8151dc40a1"
     
     FROM_WHATSAPP = "whatsapp:+14155238886"
     TO_WHATSAPP = "whatsapp:+923365464411" 
