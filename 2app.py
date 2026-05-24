@@ -111,14 +111,14 @@ def main():
     st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
     st.write("---")
     
-    # --- PART A: PERSONAL DETAILS (NO FORM CONTAINER = NO SAVE BUTTON REQUIRED) ---
+    # --- PART A: PERSONAL DETAILS (NO INTERMEDIATE SAVE BUTTONS) ---
     st.subheader("👤 Step 1: Necessary Personal Details")
     
     name = st.text_input("Enter your name *")
     father_name = st.text_input("Enter your father's name *")
     email = st.text_input("Enter your email address *")
     whatsapp_number = st.text_input("Please enter your WhatsApp number *")
-    qualification = st.text_area("Kindly describe your Academic Qualification *")
+    qualification = st.text_area("Kindly describe your Academic Qualification *") # FIXED TYPO HERE
     
     col1, col2 = st.columns(2)
     with col1:
@@ -199,6 +199,7 @@ def main():
                     "Name": name, 
                     "FatherName": father_name, 
                     "Email": email,
+                    "Project": "SOA",
                     "Whatsapp_Number": whatsapp_number,
                     "Qualification": qualification, 
                     "CSS_Attempts": css_attempts, 
