@@ -6,14 +6,51 @@ from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime
 from PIL import Image
+from twilio.rest import Client # Fixed: Capitalized 'Client' to prevent crash
 
 # -------------------------------------------------------------------------
-# 1. SECURE EMAIL ENGINE
+# 1. SECURE WHATSAPP ENGINE
+# -------------------------------------------------------------------------
+def send_whatsapp_notification(details, total_marks):
+    """Sends a real-time summary notification directly to your phone via WhatsApp."""
+    # Paste your live Twilio credentials here:
+    TWILIO_ACCOUNT_SID = "PASTE_YOUR_ACCOUNT_SID_HERE"
+    TWILIO_AUTH_TOKEN = "PASTE_YOUR_AUTH_TOKEN_HERE"
+    
+    # Twilio Sandbox configurations
+    FROM_WHATSAPP = "whatsapp:+14155238886"
+    TO_WHATSAPP = "whatsapp:+923365464411" 
+    
+    whatsapp_body = f"""
+*🎓 New SOA Registration!*
+
+*Candidate:* {details['Name']}
+*Father's Name:* {details['FatherName']}
+*Email:* {details['Email']}
+*Total Marks Opted:* {total_marks}/600
+
+Check your inbox (khanzada212008@gmail.com) to view the complete subject selections and verify their attached payment receipt document.
+"""
+    try:
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        client.messages.create(
+            body=whatsapp_body,
+            from_=FROM_WHATSAPP,
+            to=TO_WHATSAPP
+        )
+        return True
+    except Exception as e:
+        print(f"WhatsApp Error: {e}")
+        return False
+
+# -------------------------------------------------------------------------
+# 2. SECURE EMAIL ENGINE
 # -------------------------------------------------------------------------
 def send_registration_email(details, subjects, marks, receipt_file):
     """Sends an isolated, detailed email report for a single applicant."""
     MY_EMAIL = "khanzada212008@gmail.com"
     MY_PASSWORD = "whyv rtdf odiq hsgc" 
+    MY_PHONENUMBER = "03365464411"
 
     msg = MIMEMultipart()
     msg['From'] = MY_EMAIL
@@ -64,7 +101,7 @@ def send_registration_email(details, subjects, marks, receipt_file):
         return False
 
 # -------------------------------------------------------------------------
-# 2. USER INTERFACE & APP LAYOUT
+# 3. USER INTERFACE & APP LAYOUT
 # -------------------------------------------------------------------------
 def main():
     st.set_page_config(page_title="SOA Registration", page_icon="🎓", layout="centered")
@@ -76,7 +113,6 @@ def main():
     st.write("---")
     
     # --- PART A: PERSONAL DETAILS FORM ---
-    # We keep personal info in a form container so the page doesn't blink when typing names
     with st.form(key="personal_details_form"):
         st.subheader("👤 Step 1: Necessary Personal Details")
         
@@ -91,7 +127,6 @@ def main():
         with col2:
             pms_attempts = st.number_input("How many times have you appeared in PMS examination before?", min_value=0, max_value=3, step=1)
         
-        # Hidden form confirmation button
         save_details = st.form_submit_button("Save Personal Info")
             
     st.write("---")
@@ -138,9 +173,7 @@ def main():
         selected_subjects.append(f"{g7_choice} (100m)")
         total_marks += 100
 
-    # 🚨 LIVE TRACKER COUNTER - This will now update instantly upon selection click!
     st.metric(label="Current Opted Subject Marks Counter", value=f"{total_marks} / 600 Marks")
-
     st.write("---")
     
     # --- PART C: FINAL SUBMISSION & UPLOAD ---
@@ -151,12 +184,10 @@ def main():
         st.image(Image.open(uploaded_receipt), caption="Preview of payment proof", width=250)
 
     st.write("---")
-    
-    # Final independent submit button
     final_submit = st.button("Submit Final Application to SOA")
 
     # -------------------------------------------------------------------------
-    # 3. COMPLIANCE & SUBMISSION CHECK
+    # 4. COMPLIANCE & SUBMISSION CHECK
     # -------------------------------------------------------------------------
     if final_submit:
         if not name or not father_name or not email or not qualification or not uploaded_receipt:
@@ -168,19 +199,23 @@ def main():
             st.error(f"❌ Failed Compliance: Your total opted subject marks value is {total_marks}. This exceeds the compulsory 600 marks limits. Please alter your choices and click submit again.")
         
         else:
-            with st.spinner("Encrypting details and processing email delivery system..."):
+            with st.spinner("Processing registration data and broadcasting notifications..."):
                 candidate_data = {
                     "Name": name, "FatherName": father_name, "Email": email,
                     "Qualification": qualification, "CSS_Attempts": css_attempts, "PMS_Attempts": pms_attempts
                 }
                 
+                # Channel A: Sends the primary structural email with image file attachments
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt)
+                
+                # Channel B: Broadcasts a live text message ping straight to your WhatsApp mobile
+                whatsapp_sent = send_whatsapp_notification(candidate_data, total_marks)
                 
                 if email_sent:
                     st.success(f"🎉 Registration Successful! Thank you {name}. Your complete application has been sent securely to Superior Officers Academy.")
                     st.balloons()
                 else:
-                    st.warning("Application verified locally, but secure mail delivery engine failed. Did you configure your Google App Password on line 16?")
+                    st.warning("Application verified locally, but secure mail delivery engine failed. Did you configure your Google App Password on line 55?")
 
 if __name__ == "__main__":
     main()
