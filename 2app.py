@@ -158,4 +158,64 @@ def main():
         selected_subjects.append(f"{g4_choice} (100m)")
         total_marks += 100
         
-    g5_choice = st.selectbox("Select subject from Group 5 (100 Marks
+    g5_choice = st.selectbox("Select subject from Group 5 (100 Marks)", ["None", "Gender Studies", "Environmental Science", "Agriculture & Forestry", "Botany", "Zoology", "English Literature", "Urdu Literature"])
+    if g5_choice != "None":
+        selected_subjects.append(f"{g5_choice} (100m)")
+        total_marks += 100
+
+    g6_choice = st.selectbox("Select subject from Group 6 (100 Marks)", ["None", "Law", "Constitutional Law", "International Law", "Muslim Law & Jurisprudence", "Mercantile Law", "Criminology", "Philosophy"])
+    if g6_choice != "None":
+        selected_subjects.append(f"{g6_choice} (100m)")
+        total_marks += 100
+
+    g7_choice = st.selectbox("Select subject from Group 7 (100 Marks)", ["None", "Journalism and Mass Communication", "Psychology", "Geography", "Anthropology", "Sociology", "Punjabi", "Sindhi", "Balochi", "Pashto", "Persian", "Arabic"])
+    if g7_choice != "None":
+        selected_subjects.append(f"{g7_choice} (100m)")
+        total_marks += 100
+
+    st.metric(label="Current Opted Subject Marks Counter", value=f"{total_marks} / 600 Marks")
+    st.write("---")
+    
+    # --- PART C: FINAL SUBMISSION & UPLOAD ---
+    st.subheader("📁 Step 3: Registration Fee Receipt")
+    uploaded_receipt = st.file_uploader("Upload your EasyPaisa payment screenshot or slip *", type=["png", "jpg", "jpeg", "pdf"])
+    
+    if uploaded_receipt is not None and uploaded_receipt.type in ["image/png", "image/jpeg"]:
+        st.image(Image.open(uploaded_receipt), caption="Preview of payment proof", width=250)
+
+    st.write("---")
+    final_submit = st.button("Submit Final Application to SOA")
+
+    # -------------------------------------------------------------------------
+    # 4. COMPLIANCE & SUBMISSION CHECK
+    # -------------------------------------------------------------------------
+    if final_submit:
+        if not name or not father_name or not email or not whatsapp_number or not qualification or not uploaded_receipt:
+            st.error("🚨 Missing Required Fields! Please fill out all personal details (including your WhatsApp number) and upload your receipt copy.")
+        
+        elif total_marks != 600:
+            st.error(f"❌ Failed Compliance: Your total opted marks value is {total_marks}. It must equal exactly 600 marks.")
+        
+        else:
+            with st.spinner("Processing application data and broadcasting notifications..."):
+                candidate_data = {
+                    "Name": name, 
+                    "FatherName": father_name, 
+                    "Email": email,
+                    "Whatsapp_Number": whatsapp_number,
+                    "Qualification": qualification, 
+                    "CSS_Attempts": css_attempts, 
+                    "PMS_Attempts": pms_attempts
+                }
+                
+                email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt)
+                whatsapp_sent = send_whatsapp_notification(candidate_data, total_marks)
+                
+                if email_sent:
+                    st.success(f"🎉 Registration Successful! Thank you {name}. Your application has been sent securely to Superior Officers Academy.")
+                    st.balloons()
+                else:
+                    st.warning("Application verified locally, but secure mail delivery engine encountered an error. Please check your network connection.")
+
+if __name__ == "__main__":
+    main()
