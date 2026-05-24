@@ -17,7 +17,7 @@ def send_whatsapp_notification(details, total_marks):
     TWILIO_AUTH_TOKEN = "77f1dd75cca3a1ac5dc86f8151dc40a1"
     
     FROM_WHATSAPP = "whatsapp:+14155238886"
-    TO_WHATSAPP = "whatsapp:+923365464411" 
+    TO_WHATSAPP = "whatsapp:+9203365464411" 
     
     whatsapp_body = f"""
 *🎓 New SOA Registration!*
