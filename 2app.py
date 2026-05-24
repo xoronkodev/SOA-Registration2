@@ -195,13 +195,14 @@ def main():
                     MY_PHONE_NUMBER = "923365464411"
                     whatsapp_gateway_url = f"https://wa.me/{MY_PHONE_NUMBER}?text={encoded_text}"
                     
+                    # FIXED: Changed parameter to unsafe_allow_html=True
                     st.markdown(f"""
                     <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
                         <div style="background-color: #25D366; color: white; padding: 14px 20px; text-align: center; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0,0,0,0.15);">
                             📲 Complete Submission & Ping Admin WhatsApp
                         </div>
                     </a>
-                    """, unsafe_url_allowed=True)
+                    """, unsafe_allow_html=True)
                     
                     st.info("💡 **Next Step:** Click the bright green WhatsApp button right above to instantly transfer the receipt summary details directly onto your phone chat log!")
                     st.balloons()
