@@ -201,7 +201,7 @@ def main():
                     "Qualification": qualification, "CSS_Attempts": css_attempts, "PMS_Attempts": pms_attempts, "Whatsapp Number":whatsapp_number
                 }
                 
-                email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt)
+                email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt , whatsapp_number)
                 whatsapp_sent = send_whatsapp_notification(candidate_data, selected_subjects, total_marks, uploaded_receipt, whatsapp_number)
                 
                 if email_sent:
