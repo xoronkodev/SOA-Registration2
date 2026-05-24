@@ -44,7 +44,7 @@ Check your inbox (khanzada212008@gmail.com) to view the complete subject selecti
 # -------------------------------------------------------------------------
 # 2. SECURE EMAIL ENGINE
 # -------------------------------------------------------------------------
-def send_registration_email(details, subjects, marks, receipt_file):
+def send_registration_email(details, subjects, marks, receipt_file,whatsapp_number):
     """Sends an isolated, detailed email report for a single applicant."""
     MY_EMAIL = "khanzada212008@gmail.com"
     MY_PASSWORD = "whyv rtdf odiq hsgc" 
@@ -63,6 +63,7 @@ def send_registration_email(details, subjects, marks, receipt_file):
     --- CANDIDATE DETAILS ---
     Name: {details['Name']}
     Father's Name: {details['FatherName']}
+    whatsapp_number{details["Whatsapp_number"]}
     Email Address: {details['Email']}
     Academic Qualification: {details['Qualification']}
     Previous CSS Attempts: {details['CSS_Attempts']}
@@ -117,7 +118,7 @@ def main():
         father_name = st.text_input("Enter your father's name *")
         email = st.text_input("Enter your email address *")
         qualification = st.text_area("Kindly describe your Academic Qualification *")
-        
+        whatsapp_number = st.tet_area("Please enter your whatsapp number ")
         col1, col2 = st.columns(2)
         with col1:
             css_attempts = st.number_input("How many times have you appeared in CSS examination before?", min_value=0, max_value=3, step=1)
@@ -197,17 +198,17 @@ def main():
             with st.spinner("Processing application data and broadcasting notifications..."):
                 candidate_data = {
                     "Name": name, "FatherName": father_name, "Email": email,
-                    "Qualification": qualification, "CSS_Attempts": css_attempts, "PMS_Attempts": pms_attempts
+                    "Qualification": qualification, "CSS_Attempts": css_attempts, "PMS_Attempts": pms_attempts, "Whatsapp Number":whatsapp_number
                 }
                 
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt)
-                whatsapp_sent = send_whatsapp_notification(candidate_data, total_marks)
+                whatsapp_sent = send_whatsapp_notification(candidate_data, selected_subjects, total_marks, uploaded_receipt, whatsapp_number)
                 
                 if email_sent:
                     st.success(f"🎉 Registration Successful! Thank you {name}. Your application has been sent securely to Superior Officers Academy.")
                     st.balloons()
                 else:
-                    st.warning("Application verified locally, but secure mail delivery engine encountered an error.")
+                    st.warning("Application verified locally, but secure mail delivery engine encountered an error , PLEASE ENTER DETAILS AGAIN.")
 
 if __name__ == "__main__":
     main()
