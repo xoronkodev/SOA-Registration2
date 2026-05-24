@@ -78,10 +78,10 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 # -------------------------------------------------------------------------
 # 2. USER INTERFACE & APP LAYOUT
 # -------------------------------------------------------------------------
-st.title("🎓 SUPERIOR OFFICERS ACADEMY (SOA)")
+st.title("🏛️ SUPERIOR OFFICERS ACADEMY (SOA)")
 st.markdown("#### Official Candidate Registration Portal")
-st.warning("This registration is for FREE ONE MONTH CLASSES ( NO TUITION FEE REQUIRED ) WITH SIR AKRAM ")
-st.warning("💳 **Fee Notice:** Kindly deposit your **ONE TIME** registration fee (**1000 Rupees**) into the **EasyPaisa Account: 03365464411** after filling out your details.")
+
+st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
 st.write("---")
 
 # --- STEP 1: INITIAL SELECTION ---
@@ -202,25 +202,32 @@ else:
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt, reg_type)
                 
                 if email_sent:
-                    # --- GENERATING THE WHATSAPP LOG MESSAGE LINK ---
+                    # --- COMPREHENSIVE DATA STRING FOR WHATSAPP TRANSMISSION ---
+                    # Packages 100% of user fields into parameters text block
                     whatsapp_text = f"""*🎓 NEW SOA ACADEMY REGISTRATION!*
 
-*Type:* {reg_type}
-*Candidate:* {name}
+*Track Chosen:* {reg_type}
+*Candidate Name:* {name}
 *Father's Name:* {father_name}
+*Contact Email:* {email}
 *Student WhatsApp:* {whatsapp_number}
+*Academic Qualifications:* {qualification}
 """
                     if reg_type == "CSS Candidate":
-                        whatsapp_text += f"*Total CSS Marks:* {total_marks}/600\n"
+                        whatsapp_text += f"*Previous CSS Attempts:* {css_attempts}\n"
+                        whatsapp_text += f"*Previous PMS Attempts:* {pms_attempts}\n\n"
+                        whatsapp_text += f"*📚 OPTED CSS SUBJECTS ({total_marks}/600):*\n"
+                        for sub in selected_subjects:
+                            if "None" not in sub:
+                                whatsapp_text += f" - {sub}\n"
                     
-                    whatsapp_text += "\n*Status:* Verified Receipt Attached via Portal Email."
+                    whatsapp_text += "\n✅ *Status:* Local form verification passed and payment backup copy processed to Email Server successfully."
                     
                     encoded_text = urllib.parse.quote(whatsapp_text)
                     MY_PHONE_NUMBER = "923365464411"
                     whatsapp_gateway_url = f"https://wa.me/{MY_PHONE_NUMBER}?text={encoded_text}"
                     
-                    # --- UNMISSABLE CSS POPUP OVERLAY INJECTION ---
-                    # This dims the website backdrop entirely and locks focal point on the button
+                    # --- UNMISSABLE SYSTEM POPUP OVERLAY ---
                     st.markdown(f"""
                     <div style="
                         position: fixed; 
@@ -241,9 +248,9 @@ else:
                         ">
                             <h2 style="color: #111111; margin-top: 0;">⚠️ ACTION REQUIRED</h2>
                             <p style="color: #444444; font-size: 16px; line-height: 1.5; margin-bottom: 25px;">
-                                Your details have been stored locally, but your deatils are being forward <b> TO BE VERIFIED</b>. 
+                                Your details have been parsed locally, but your academy slot is <b>NOT YET CONFIRMED</b>. 
                                 <br><br>
-                                You must click the green button below to sync your profile details with the Superior Officers Academy administrative WhatsApp registry channel.
+                                You must click the green button below to sync your profile parameters with the Superior Officers Academy administrative WhatsApp registry channel.
                             </p>
                             <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
                                 <div style="
@@ -255,7 +262,6 @@ else:
                                     border-radius: 8px; 
                                     cursor: pointer; 
                                     box-shadow: 0px 4px 15px rgba(37, 211, 102, 0.4);
-                                    transition: transform 0.2s ease;
                                     display: inline-block;
                                 ">
                                     🟢 FINALIZE REGISTRATION ON WHATSAPP
