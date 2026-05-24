@@ -63,7 +63,7 @@ def send_registration_email(details, subjects, marks, receipt_file,whatsapp_numb
     --- CANDIDATE DETAILS ---
     Name: {details['Name']}
     Father's Name: {details['FatherName']}
-    whatsapp_number{details["whatsapp_number"]}
+    whatsapp_number{details["whatsappnumber"]}
     Email Address: {details['Email']}
     Academic Qualification: {details['Qualification']}
     Previous CSS Attempts: {details['CSS_Attempts']}
