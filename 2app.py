@@ -6,7 +6,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime
 from PIL import Image
-from twilio.rest import Client # Fixed: Capitalized 'Client' to prevent crash
+from twilio.rest import Client 
 
 # -------------------------------------------------------------------------
 # 1. SECURE WHATSAPP ENGINE
