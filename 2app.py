@@ -80,8 +80,8 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 # -------------------------------------------------------------------------
 st.title("🎓 SUPERIOR OFFICERS ACADEMY (SOA)")
 st.markdown("#### Official Candidate Registration Portal")
-
-st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
+st.warning("This registration is for FREE ONE MONTH CLASSES ( NO TUITION FEE REQUIRED ) WITH SIR AKRAM ")
+st.warning("💳 **Fee Notice:** Kindly deposit your **ONE TIME** registration fee (**1000 Rupees**) into the **EasyPaisa Account: 03365464411** after filling out your details.")
 st.write("---")
 
 # --- STEP 1: INITIAL SELECTION ---
