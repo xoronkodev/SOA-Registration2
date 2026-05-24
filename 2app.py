@@ -111,27 +111,24 @@ def main():
     st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
     st.write("---")
     
-    # --- PART A: PERSONAL DETAILS FORM ---
-    with st.form(key="personal_details_form"):
-        st.subheader("👤 Step 1: Necessary Personal Details")
+    # --- PART A: PERSONAL DETAILS (NO FORM CONTAINER = NO SAVE BUTTON REQUIRED) ---
+    st.subheader("👤 Step 1: Necessary Personal Details")
+    
+    name = st.text_input("Enter your name *")
+    father_name = st.text_input("Enter your father's name *")
+    email = st.text_input("Enter your email address *")
+    whatsapp_number = st.text_input("Please enter your WhatsApp number *")
+    qualification = st.text_area("Kindly describe your Academic Qualification *")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        css_attempts = st.number_input("How many times have you appeared in CSS examination before?", min_value=0, max_value=3, step=1)
+    with col2:
+        pms_attempts = st.number_input("How many times have you appeared in PMS examination before?", min_value=0, max_value=3, step=1)
         
-        name = st.text_input("Enter your name *")
-        father_name = st.text_input("Enter your father's name *")
-        email = st.text_input("Enter your email address *")
-        whatsapp_number = st.text_input("Please enter your WhatsApp number *")
-        qualification = st.text_area("Kindly describe your Academic Qualification *")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            css_attempts = st.number_input("How many times have you appeared in CSS examination before?", min_value=0, max_value=3, step=1)
-        with col2:
-            pms_attempts = st.number_input("How many times have you appeared in PMS examination before?", min_value=0, max_value=3, step=1)
-        
-        save_details = st.form_submit_button("Save Personal Info")
-            
     st.write("---") 
     
-    # --- PART B: LIVE SUBJECT SELECTION (OUTSIDE FORM) ---
+    # --- PART B: LIVE SUBJECT SELECTION ---
     st.subheader("📚 Step 2: Subject Selection")
     st.info("Select one subject from each group you wish to take. Your **Total Marks Score must equal exactly 600** to qualify.")
     
