@@ -78,10 +78,10 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 def main():
     st.set_page_config(page_title="SOA Registration", page_icon="🎓", layout="centered")
     
-    st.title("🏛️ SUPERIOR OFFICERS ACADEMY (SOA)")
+    st.title("SUPERIOR OFFICERS ACADEMY (SOA)")
     st.markdown("#### Official Candidate Registration Portal")
     
-    st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
+    st.warning("**Fee Notice:** Kindly deposit ONLY  your registration fee (**There is no tuition fee**) (**RUPEES 1000**) into the **EasyPaisa Account: 03365464411** after filling out details in forum.")
     st.write("---")
     
     # --- CRITICAL FIRST QUESTION POSITIONED AT THE TOP ---
