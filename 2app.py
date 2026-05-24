@@ -1,49 +1,15 @@
 import streamlit as st
 import smtplib
+import urllib.parse
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime
 from PIL import Image
-from twilio.rest import Client
 
 # -------------------------------------------------------------------------
-# 1. SECURE WHATSAPP ENGINE
-# -------------------------------------------------------------------------
-def send_whatsapp_notification(details, total_marks):
-    """Sends a real-time summary notification directly to your phone via WhatsApp."""
-    TWILIO_ACCOUNT_SID = "AC7c6c5c8121c5287dd861758f57ac72cd"
-    TWILIO_AUTH_TOKEN = "77f1dd75cca3a1ac5dc86f8151dc40a1"
-    
-    FROM_WHATSAPP = "whatsapp:+14155238886"
-    TO_WHATSAPP = "whatsapp:+923365464411" 
-    
-    whatsapp_body = f"""
-*🎓 New SOA Registration!*
-
-*Candidate:* {details['Name']}
-*Father's Name:* {details['FatherName']}
-*Email:* {details['Email']}
-*Student WhatsApp:* {details['Whatsapp_Number']}
-*Total Marks Opted:* {total_marks}/600
-
-Check your inbox (khanzada212008@gmail.com) to view the complete subject selections and verify their attached payment receipt document.
-"""
-    try:
-        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-        client.messages.create(
-            body=whatsapp_body,
-            from_=FROM_WHATSAPP,
-            to=TO_WHATSAPP
-        )
-        return True
-    except Exception as e:
-        print(f"WhatsApp Error: {e}")
-        return False
-
-# -------------------------------------------------------------------------
-# 2. SECURE EMAIL ENGINE
+# 1. SECURE EMAIL ENGINE
 # -------------------------------------------------------------------------
 def send_registration_email(details, subjects, marks, receipt_file):
     """Sends an isolated, detailed email report for a single applicant."""
@@ -100,7 +66,7 @@ def send_registration_email(details, subjects, marks, receipt_file):
         return False
 
 # -------------------------------------------------------------------------
-# 3. USER INTERFACE & APP LAYOUT
+# 2. USER INTERFACE & APP LAYOUT
 # -------------------------------------------------------------------------
 def main():
     st.set_page_config(page_title="SOA Registration", page_icon="🎓", layout="centered")
@@ -111,27 +77,24 @@ def main():
     st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
     st.write("---")
     
-    # --- PART A: PERSONAL DETAILS FORM ---
-    with st.form(key="personal_details_form"):
-        st.subheader("👤 Step 1: Necessary Personal Details")
+    # --- PART A: PERSONAL DETAILS ---
+    st.subheader("👤 Step 1: Necessary Personal Details")
+    
+    name = st.text_input("Enter your name *")
+    father_name = st.text_input("Enter your father's name *")
+    email = st.text_input("Enter your email address *")
+    whatsapp_number = st.text_input("Please enter your WhatsApp number *")
+    qualification = st.text_area("Kindly describe your Academic Qualification *")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        css_attempts = st.number_input("How many times have you appeared in CSS examination before?", min_value=0, max_value=3, step=1)
+    with col2:
+        pms_attempts = st.number_input("How many times have you appeared in PMS examination before?", min_value=0, max_value=3, step=1)
         
-        name = st.text_input("Enter your name *")
-        father_name = st.text_input("Enter your father's name *")
-        email = st.text_input("Enter your email address *")
-        whatsapp_number = st.text_input("Please enter your WhatsApp number *")
-        qualification = st.text_area("Kindly describe your Academic Qualification *")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            css_attempts = st.number_input("How many times have you appeared in CSS examination before?", min_value=0, max_value=3, step=1)
-        with col2:
-            pms_attempts = st.number_input("How many times have you appeared in PMS examination before?", min_value=0, max_value=3, step=1)
-        
-        save_details = st.form_submit_button("Save Personal Info")
-            
     st.write("---") 
     
-    # --- PART B: LIVE SUBJECT SELECTION (OUTSIDE FORM) ---
+    # --- PART B: LIVE SUBJECT SELECTION ---
     st.subheader("📚 Step 2: Subject Selection")
     st.info("Select one subject from each group you wish to take. Your **Total Marks Score must equal exactly 600** to qualify.")
     
@@ -187,7 +150,7 @@ def main():
     final_submit = st.button("Submit Final Application to SOA")
 
     # -------------------------------------------------------------------------
-    # 4. COMPLIANCE & SUBMISSION CHECK
+    # 3. COMPLIANCE & SUBMISSION CHECK
     # -------------------------------------------------------------------------
     if final_submit:
         if not name or not father_name or not email or not whatsapp_number or not qualification or not uploaded_receipt:
@@ -197,7 +160,7 @@ def main():
             st.error(f"❌ Failed Compliance: Your total opted marks value is {total_marks}. It must equal exactly 600 marks.")
         
         else:
-            with st.spinner("Processing application data and broadcasting notifications..."):
+            with st.spinner("Processing application data and building your dashboard links..."):
                 candidate_data = {
                     "Name": name, 
                     "FatherName": father_name, 
@@ -208,11 +171,39 @@ def main():
                     "PMS_Attempts": pms_attempts
                 }
                 
+                # Execute the background email engine to back up the data instantly
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt)
-                whatsapp_sent = send_whatsapp_notification(candidate_data, total_marks)
                 
                 if email_sent:
-                    st.success(f"🎉 Registration Successful! Thank you {name}. Your application has been sent securely to Superior Officers Academy.")
+                    st.success(f"🎉 Registration Logged! Thank you {name}. Your official email backup has been successfully dispatched.")
+                    
+                    # --- INSTANT FOREVER-FREE WHATSAPP TELEPORT ROUTE ---
+                    whatsapp_text = f"""*🎓 NEW SOA ACADEMY REGISTRATION!*
+
+*Candidate:* {name}
+*Father's Name:* {father_name}
+*Email:* {email}
+*Student WhatsApp:* {whatsapp_number}
+*Total Marks:* {total_marks}/600
+
+*Status:* Verified Receipt Attached via Portal Email."""
+                    
+                    # URL safely encode text formatting characters
+                    encoded_text = urllib.parse.quote(whatsapp_text)
+                    
+                    # Your phone number where you want to receive the alerts
+                    MY_PHONE_NUMBER = "923365464411"
+                    whatsapp_gateway_url = f"https://wa.me/{MY_PHONE_NUMBER}?text={encoded_text}"
+                    
+                    st.markdown(f"""
+                    <a href="{whatsapp_gateway_url}" target="_blank" style="text-decoration: none;">
+                        <div style="background-color: #25D366; color: white; padding: 14px 20px; text-align: center; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0,0,0,0.15);">
+                            📲 Complete Submission & Ping Admin WhatsApp
+                        </div>
+                    </a>
+                    """, unsafe_url_allowed=True)
+                    
+                    st.info("💡 **Next Step:** Click the bright green WhatsApp button right above to instantly transfer the receipt summary details directly onto your phone chat log!")
                     st.balloons()
                 else:
                     st.warning("Application verified locally, but secure mail delivery engine encountered an error. Please check your network connection.")
