@@ -6,19 +6,20 @@ from email.mime.base import MIMEBase
 from email import encoders
 from datetime import datetime
 from PIL import Image
-from twilio.rest import Client 
+from twilio.rest import Client  # Handled safely by requirements.txt
 
 # -------------------------------------------------------------------------
 # 1. SECURE WHATSAPP ENGINE
 # -------------------------------------------------------------------------
 def send_whatsapp_notification(details, total_marks):
     """Sends a real-time summary notification directly to your phone via WhatsApp."""
-    # Paste your live Twilio credentials here:
-    TWILIO_ACCOUNT_SID = "PASTE_YOUR_ACCOUNT_SID_HERE"
-    TWILIO_AUTH_TOKEN = "PASTE_YOUR_AUTH_TOKEN_HERE"
+    # Place your actual Twilio dashboard keys here:
+    TWILIO_ACCOUNT_SID = "AC7c6c5c8121c5287dd861758f57ac72cd"
+    TWILIO_AUTH_TOKEN = "e682c651b284f6cf6d407a9e08615c18"
     
-    # Twilio Sandbox configurations
+    # Twilio Universal Sandbox Number
     FROM_WHATSAPP = "whatsapp:+14155238886"
+    # Your verified personal WhatsApp link
     TO_WHATSAPP = "whatsapp:+923365464411" 
     
     whatsapp_body = f"""
@@ -50,7 +51,6 @@ def send_registration_email(details, subjects, marks, receipt_file):
     """Sends an isolated, detailed email report for a single applicant."""
     MY_EMAIL = "khanzada212008@gmail.com"
     MY_PASSWORD = "whyv rtdf odiq hsgc" 
-    MY_PHONENUMBER = "03365464411"
 
     msg = MIMEMultipart()
     msg['From'] = MY_EMAIL
@@ -112,7 +112,6 @@ def main():
     st.warning("💳 **Fee Notice:** Kindly deposit your registration fee into the **EasyPaisa Account: 03365464411** before filling out this form.")
     st.write("---")
     
-    # --- PART A: PERSONAL DETAILS FORM ---
     with st.form(key="personal_details_form"):
         st.subheader("👤 Step 1: Necessary Personal Details")
         
@@ -131,7 +130,6 @@ def main():
             
     st.write("---")
     
-    # --- PART B: LIVE SUBJECT SELECTION (OUTSIDE FORM) ---
     st.subheader("📚 Step 2: Subject Selection")
     st.info("Select one subject from each group you wish to take. Your **Total Marks Score must equal exactly 600** to qualify.")
     
@@ -176,7 +174,6 @@ def main():
     st.metric(label="Current Opted Subject Marks Counter", value=f"{total_marks} / 600 Marks")
     st.write("---")
     
-    # --- PART C: FINAL SUBMISSION & UPLOAD ---
     st.subheader("📁 Step 3: Registration Fee Receipt")
     uploaded_receipt = st.file_uploader("Upload your EasyPaisa payment screenshot or slip *", type=["png", "jpg", "jpeg", "pdf"])
     
@@ -191,31 +188,26 @@ def main():
     # -------------------------------------------------------------------------
     if final_submit:
         if not name or not father_name or not email or not qualification or not uploaded_receipt:
-            st.error("🚨 Missing Required Fields! Please make sure you have filled out the personal details form at the top and uploaded your receipt payment copy.")
+            st.error("🚨 Missing Required Fields! Please fill out the personal details form and upload your payment copy.")
         
-        elif total_marks < 600:
-            st.error(f"❌ Failed Compliance: Your total opted subject marks value is {total_marks}. This is less than the compulsory 600 marks. Please alter your choices and click submit again.")
-        elif total_marks > 600:
-            st.error(f"❌ Failed Compliance: Your total opted subject marks value is {total_marks}. This exceeds the compulsory 600 marks limits. Please alter your choices and click submit again.")
+        elif total_marks != 600:
+            st.error(f"❌ Failed Compliance: Your total opted marks value is {total_marks}. It must equal exactly 600 marks.")
         
         else:
-            with st.spinner("Processing registration data and broadcasting notifications..."):
+            with st.spinner("Processing application data and broadcasting notifications..."):
                 candidate_data = {
                     "Name": name, "FatherName": father_name, "Email": email,
                     "Qualification": qualification, "CSS_Attempts": css_attempts, "PMS_Attempts": pms_attempts
                 }
                 
-                # Channel A: Sends the primary structural email with image file attachments
                 email_sent = send_registration_email(candidate_data, selected_subjects, total_marks, uploaded_receipt)
-                
-                # Channel B: Broadcasts a live text message ping straight to your WhatsApp mobile
                 whatsapp_sent = send_whatsapp_notification(candidate_data, total_marks)
                 
                 if email_sent:
                     st.success(f"🎉 Registration Successful! Thank you {name}. Your complete application has been sent securely to Superior Officers Academy.")
                     st.balloons()
                 else:
-                    st.warning("Application verified locally, but secure mail delivery engine failed. Did you configure your Google App Password on line 55?")
+                    st.warning("Application verified locally, but secure mail delivery engine encountered an error.")
 
 if __name__ == "__main__":
     main()
