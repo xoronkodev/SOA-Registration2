@@ -81,8 +81,10 @@ def send_registration_email(details, subjects, marks, receipt_file, registration
 st.title(" 🎓 SUPERIOR OFFICERS ACADEMY (SOA)")
 st.markdown("#### Official Candidate Registration Portal")
 st.warning("One-month FREE ESSAY WRITING classes. It is a one time offer for a limited number of seats")
-st.warning("💳 **Fee Notice:** Kindly deposit your ONE TIME  registration fee (1000 RUPEES) into the **EasyPaisa Account: 03365464411 ACCOUNT NAME : MUHAMMAD AKRAM ** after filling out your details.")
+st.warning("💳 **Fee Notice (ONLY APPILIES FOR GENERAL/CSS STUDENTS WANTING TO PARTAKE IN ONE MONTH FREE CLASSES):** Kindly deposit your ONE TIME  registration fee (1000 RUPEES) into the **EasyPaisa Account: 03365464411 ACCOUNT NAME : MUHAMMAD AKRAM ** after filling out your details.")
+st.warning()
 st.write("---")
+
 
 # --- STEP 1: INITIAL SELECTION ---
 st.subheader("🎯 Step 1: Select Your Registration Category")
